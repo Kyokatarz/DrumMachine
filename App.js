@@ -7,55 +7,55 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var soundBank = {
-    Q: {
+    'Q': {
         keyCode: 81,
         id: 'Q',
         soundURL: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_1.mp3',
         name: "Chord 1"
 
     },
-    W: {
+    'W': {
         keyCode: 87,
         id: 'W',
         soundURL: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_2.mp3',
         name: 'Chord 2'
     },
-    E: {
+    'E': {
         keyCode: 69,
         id: "E",
         soundURL: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_3.mp3',
-        name: 'Chord-3'
+        name: 'Chord 3'
     },
-    A: {
+    'A': {
         keyCode: 65,
         id: 'A', soundURL: 'https://s3.amazonaws.com/freecodecamp/drums/Give_us_a_light.mp3',
         name: 'Shaker'
     },
-    S: {
+    'S': {
         keyCode: 83,
         id: 'S',
         soundURL: 'https://s3.amazonaws.com/freecodecamp/drums/Dry_Ohh.mp3',
         name: 'Open HH'
     },
-    D: {
+    'D': {
         keyCode: 68,
         id: 'D',
         soundURL: 'https://s3.amazonaws.com/freecodecamp/drums/Bld_H1.mp3',
         name: 'Closed HH'
     },
-    Z: {
+    'Z': {
         keyCode: 90,
         id: 'Z',
         soundURL: 'https://s3.amazonaws.com/freecodecamp/drums/punchy_kick_1.mp3',
         name: 'Punchy Kick'
     },
-    X: {
+    'X': {
         keyCode: 88,
         id: 'X',
         soundURL: 'https://s3.amazonaws.com/freecodecamp/drums/side_stick_1.mp3',
         name: 'Side Stick'
     },
-    C: {
+    'C': {
         keyCode: 67,
         id: 'C',
         soundURL: 'https://s3.amazonaws.com/freecodecamp/drums/Brk_Snr.mp3',
@@ -69,15 +69,30 @@ var App = function (_React$Component) {
     function App(props) {
         _classCallCheck(this, App);
 
-        return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+
+        _this.state = {
+            name: 'Default Name'
+        };
+        _this.getName = _this.getName.bind(_this);
+        return _this;
     }
 
     _createClass(App, [{
+        key: 'getName',
+        value: function getName(soundName) {
+            this.setState({
+                name: soundName
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
+            var _this2 = this;
+
             var arr = ['Q', 'W', 'E', 'A', 'S', 'D', 'Z', 'X', 'C'];
             var DrumPads = arr.map(function (a) {
-                return React.createElement(DrumButton, { letter: a, id: a });
+                return React.createElement(DrumButton, { letter: a, soundUrl: soundBank[a]['soundURL'], getName: _this2.getName });
             });
 
             return React.createElement(
@@ -87,6 +102,11 @@ var App = function (_React$Component) {
                     'div',
                     { id: 'drum-button' },
                     DrumPads
+                ),
+                React.createElement(
+                    'h1',
+                    null,
+                    this.state.name
                 )
             );
         }
@@ -101,20 +121,53 @@ var DrumButton = function (_React$Component2) {
     function DrumButton(props) {
         _classCallCheck(this, DrumButton);
 
-        return _possibleConstructorReturn(this, (DrumButton.__proto__ || Object.getPrototypeOf(DrumButton)).call(this, props));
+        var _this3 = _possibleConstructorReturn(this, (DrumButton.__proto__ || Object.getPrototypeOf(DrumButton)).call(this, props));
+
+        _this3.getName = _this3.props.getName;
+
+        _this3.playSound = _this3.playSound.bind(_this3);
+        _this3.handleKey = _this3.handleKey.bind(_this3);
+        _this3.getName = _this3.getName.bind(_this3);
+        return _this3;
     }
 
     _createClass(DrumButton, [{
+        key: 'playSound',
+        value: function playSound() {
+            var sound = document.getElementById(this.props.letter);
+            sound.currentTime = 0;
+            sound.play();
+            getName(soundBank[this.props.letter]['name']);
+        }
+    }, {
+        key: 'handleKey',
+        value: function handleKey(event) {
+            if (event.keyCode === soundBank[this.props.letter]['keyCode']) {
+                this.playSound();
+            }
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            document.addEventListener('keydown', this.handleKey);
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            document.removeEventListener('keydown', this.handleKey);
+        }
+    }, {
         key: 'render',
         value: function render() {
             return React.createElement(
-                'button',
-                { id: this.props.id },
+                'div',
+                { className: 'drum-pad', onClick: this.playSound },
                 React.createElement(
                     'p',
                     null,
                     this.props.letter
-                )
+                ),
+                React.createElement('audio', { id: this.props.letter, src: this.props.soundUrl })
             );
         }
     }]);
