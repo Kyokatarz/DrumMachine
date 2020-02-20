@@ -59,27 +59,27 @@ class App extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            name: 'Default Name'
+            name: ''
         }
-        this.getName = this.getName.bind(this);
+        this.triggerThis = this.triggerThis.bind(this);
     }
     
-     getName(soundName){
+     triggerThis(newName){
          this.setState({
-             name: soundName
+             name: newName
          })   
         }
     
     render(){
         let arr = ['Q','W','E','A','S','D','Z','X','C'];
-        let DrumPads = arr.map((a) => (<DrumButton letter={a} soundUrl ={soundBank[a]['soundURL']} getName={this.getName} />));
+        let DrumPads = arr.map((a) => (<DrumButton letter={a} soundUrl ={soundBank[a]['soundURL']}  triggerThis = {this.triggerThis}/>));
         
        
         
         return(
             <div id='drum-machine'>
                 <div id='drum-button'>{DrumPads}</div>
-                <h1>{this.state.name}</h1>
+                <Display soundName={this.state.name}/>
             </div>
                 
         )
@@ -92,16 +92,16 @@ class DrumButton extends React.Component{
         super(props);
     this.playSound = this.playSound.bind(this);
     this.handleKey = this.handleKey.bind(this);
-    this.getName = this.getName.bind(this);
-    }
     
-    getName = this.props.getName;
+    }
+
 
     playSound(){
         let sound = document.getElementById(this.props.letter);
         sound.currentTime = 0;
         sound.play();
-        getName(soundBank[this.props.letter]['name']);
+        this.props.triggerThis(soundBank[this.props.letter]['name']);
+    
     }
     
     handleKey(event){
@@ -126,6 +126,18 @@ class DrumButton extends React.Component{
                     <audio id = {this.props.letter} src = {this.props.soundUrl}></audio>
                 </div>
                 
+        )
+    }
+}
+
+class Display extends React.Component{
+    constructor(props){
+        super(props);
+    }
+    
+    render(){
+        return(
+        <p id = 'display'>{this.props.soundName}</p>
         )
     }
 }

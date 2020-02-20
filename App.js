@@ -72,17 +72,17 @@ var App = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
         _this.state = {
-            name: 'Default Name'
+            name: ''
         };
-        _this.getName = _this.getName.bind(_this);
+        _this.triggerThis = _this.triggerThis.bind(_this);
         return _this;
     }
 
     _createClass(App, [{
-        key: 'getName',
-        value: function getName(soundName) {
+        key: 'triggerThis',
+        value: function triggerThis(newName) {
             this.setState({
-                name: soundName
+                name: newName
             });
         }
     }, {
@@ -92,7 +92,7 @@ var App = function (_React$Component) {
 
             var arr = ['Q', 'W', 'E', 'A', 'S', 'D', 'Z', 'X', 'C'];
             var DrumPads = arr.map(function (a) {
-                return React.createElement(DrumButton, { letter: a, soundUrl: soundBank[a]['soundURL'], getName: _this2.getName });
+                return React.createElement(DrumButton, { letter: a, soundUrl: soundBank[a]['soundURL'], triggerThis: _this2.triggerThis });
             });
 
             return React.createElement(
@@ -103,11 +103,7 @@ var App = function (_React$Component) {
                     { id: 'drum-button' },
                     DrumPads
                 ),
-                React.createElement(
-                    'h1',
-                    null,
-                    this.state.name
-                )
+                React.createElement(Display, { soundName: this.state.name })
             );
         }
     }]);
@@ -123,11 +119,9 @@ var DrumButton = function (_React$Component2) {
 
         var _this3 = _possibleConstructorReturn(this, (DrumButton.__proto__ || Object.getPrototypeOf(DrumButton)).call(this, props));
 
-        _this3.getName = _this3.props.getName;
-
         _this3.playSound = _this3.playSound.bind(_this3);
         _this3.handleKey = _this3.handleKey.bind(_this3);
-        _this3.getName = _this3.getName.bind(_this3);
+
         return _this3;
     }
 
@@ -137,7 +131,7 @@ var DrumButton = function (_React$Component2) {
             var sound = document.getElementById(this.props.letter);
             sound.currentTime = 0;
             sound.play();
-            getName(soundBank[this.props.letter]['name']);
+            this.props.triggerThis(soundBank[this.props.letter]['name']);
         }
     }, {
         key: 'handleKey',
@@ -175,8 +169,31 @@ var DrumButton = function (_React$Component2) {
     return DrumButton;
 }(React.Component);
 
-var TestSubject = function (_React$Component3) {
-    _inherits(TestSubject, _React$Component3);
+var Display = function (_React$Component3) {
+    _inherits(Display, _React$Component3);
+
+    function Display(props) {
+        _classCallCheck(this, Display);
+
+        return _possibleConstructorReturn(this, (Display.__proto__ || Object.getPrototypeOf(Display)).call(this, props));
+    }
+
+    _createClass(Display, [{
+        key: 'render',
+        value: function render() {
+            return React.createElement(
+                'p',
+                { id: 'display' },
+                this.props.soundName
+            );
+        }
+    }]);
+
+    return Display;
+}(React.Component);
+
+var TestSubject = function (_React$Component4) {
+    _inherits(TestSubject, _React$Component4);
 
     function TestSubject(props) {
         _classCallCheck(this, TestSubject);
