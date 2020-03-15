@@ -56,3 +56,26 @@ html, body  {
     
 }
 
+#pwr-control{
+    height: 100px;
+    width: 100px;
+    background-color:aliceblue;
+    border-radius: 10px;
+}
+
+.on{
+    height: 100%;
+    width: 100%;
+    background-color: #1ce63a;
+    border-radius: 10px;
+    box-shadow: inset 5px 5px 35px 21px #33803f;
+    box-shadow: 0px 0px 40px 1px rgba(28,230,58,1);
+}
+
+.off{
+    height: 100%;
+    width: 100%;
+    background-color: grey;
+    border-radius: 10px;
+}
+

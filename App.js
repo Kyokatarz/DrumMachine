@@ -72,7 +72,9 @@ var App = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
         _this.state = {
-            name: ''
+            name: 'Power On',
+            pwr: true
+
         };
         _this.triggerThis = _this.triggerThis.bind(_this);
         return _this;
@@ -86,13 +88,29 @@ var App = function (_React$Component) {
             });
         }
     }, {
+        key: 'switchPwr',
+        value: function switchPwr() {
+
+            if (this.state.pwr == false) {
+                this.setState(function (_ref) {
+                    var pwr = _ref.pwr;
+                    return { name: 'Power On',
+                        pwr: !pwr };
+                });
+            } else this.setState(function (_ref2) {
+                var pwr = _ref2.pwr;
+                return { name: 'Power Off',
+                    pwr: !pwr };
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
             var _this2 = this;
 
             var arr = ['Q', 'W', 'E', 'A', 'S', 'D', 'Z', 'X', 'C'];
             var DrumPads = arr.map(function (a) {
-                return React.createElement(DrumButton, { letter: a, soundUrl: soundBank[a]['soundURL'], triggerThis: _this2.triggerThis });
+                return React.createElement(DrumButton, { letter: a, soundUrl: soundBank[a]['soundURL'], triggerThis: _this2.triggerThis, pwr: _this2.state.pwr });
             });
 
             return React.createElement(
@@ -103,7 +121,12 @@ var App = function (_React$Component) {
                     { id: 'drum-button' },
                     DrumPads
                 ),
-                React.createElement(Display, { soundName: this.state.name })
+                React.createElement(Display, { soundName: this.state.name }),
+                React.createElement(
+                    'div',
+                    { id: 'pwr-control' },
+                    this.state.pwr == true ? React.createElement('div', { className: 'on', onClick: this.switchPwr.bind(this) }) : React.createElement('div', { className: 'off', onClick: this.switchPwr.bind(this) })
+                )
             );
         }
     }]);
@@ -128,15 +151,17 @@ var DrumButton = function (_React$Component2) {
     _createClass(DrumButton, [{
         key: 'playSound',
         value: function playSound() {
-            var sound = document.getElementById(this.props.letter);
-            sound.currentTime = 0;
-            sound.play();
-            this.props.triggerThis(soundBank[this.props.letter]['name']);
+            if (this.props.pwr == true) {
+                var sound = document.getElementById(this.props.letter);
+                sound.currentTime = 0;
+                sound.play();
+                this.props.triggerThis(soundBank[this.props.letter]['name']);
+            }
         }
     }, {
         key: 'handleKey',
         value: function handleKey(event) {
-            if (event.keyCode === soundBank[this.props.letter]['keyCode']) {
+            if (this.props.pwr == true) if (event.keyCode === soundBank[this.props.letter]['keyCode']) {
                 this.playSound();
             }
         }
@@ -190,34 +215,6 @@ var Display = function (_React$Component3) {
     }]);
 
     return Display;
-}(React.Component);
-
-var TestSubject = function (_React$Component4) {
-    _inherits(TestSubject, _React$Component4);
-
-    function TestSubject(props) {
-        _classCallCheck(this, TestSubject);
-
-        return _possibleConstructorReturn(this, (TestSubject.__proto__ || Object.getPrototypeOf(TestSubject)).call(this, props));
-    }
-
-    _createClass(TestSubject, [{
-        key: 'render',
-        value: function render() {
-
-            return React.createElement(
-                'div',
-                null,
-                React.createElement(
-                    'h1',
-                    null,
-                    ' THIS WORKS'
-                )
-            );
-        }
-    }]);
-
-    return TestSubject;
 }(React.Component);
 
 ReactDOM.render(React.createElement(App, null), document.querySelector('#AppContainer'));

@@ -59,7 +59,10 @@ class App extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            name: ''
+            name: 'Power On',
+            pwr: true,
+            
+            
         }
         this.triggerThis = this.triggerThis.bind(this);
     }
@@ -70,9 +73,19 @@ class App extends React.Component{
          })   
         }
     
+    switchPwr(){
+            
+            if (this.state.pwr == false){
+                this.setState(({pwr})=>({name: 'Power On',
+                                        pwr: !pwr}))
+            } else this.setState(({pwr})=>({name: 'Power Off',
+                                        pwr: !pwr}))
+                  
+        }
+    
     render(){
         let arr = ['Q','W','E','A','S','D','Z','X','C'];
-        let DrumPads = arr.map((a) => (<DrumButton letter={a} soundUrl ={soundBank[a]['soundURL']}  triggerThis = {this.triggerThis}/>));
+        let DrumPads = arr.map((a) => (<DrumButton letter={a} soundUrl ={soundBank[a]['soundURL']}  triggerThis = {this.triggerThis} pwr = {this.state.pwr}/>));
         
        
         
@@ -80,6 +93,14 @@ class App extends React.Component{
             <div id='drum-machine'>
                 <div id='drum-button'>{DrumPads}</div>
                 <Display soundName={this.state.name}/>
+                <div id='pwr-control'>
+                        {
+                            this.state.pwr == true ? 
+                            <div className = 'on' onClick={this.switchPwr.bind(this)}></div> : 
+                            <div className = 'off' onClick={this.switchPwr.bind(this)}></div>
+                        }
+                
+                </div>    
             </div>
                 
         )
@@ -97,18 +118,20 @@ class DrumButton extends React.Component{
 
 
     playSound(){
-        let sound = document.getElementById(this.props.letter);
-        sound.currentTime = 0;
-        sound.play();
-        this.props.triggerThis(soundBank[this.props.letter]['name']);
-    
+        if (this.props.pwr == true){
+            let sound = document.getElementById(this.props.letter);
+            sound.currentTime = 0;
+            sound.play();
+            this.props.triggerThis(soundBank[this.props.letter]['name']);
+        }
     }
     
     handleKey(event){
-        if (event.keyCode === soundBank[this.props.letter]['keyCode']){
-            this.playSound();
-        }    
-    }
+        if(this.props.pwr == true)
+            if (event.keyCode === soundBank[this.props.letter]['keyCode']){
+                this.playSound();
+            }    
+        }
     
     componentDidMount(){
         document.addEventListener('keydown',this.handleKey);
@@ -122,7 +145,6 @@ class DrumButton extends React.Component{
                 
                 <div className="drum-pad" onClick = {this.playSound}>
                     <p>{this.props.letter}</p>
-            
                     <audio id = {this.props.letter} src = {this.props.soundUrl}></audio>
                 </div>
                 
@@ -142,18 +164,5 @@ class Display extends React.Component{
     }
 }
 
-class TestSubject extends React.Component{
-    constructor(props){
-        super(props);
-    }
-    
-    render(){
-        
-        return(
-        <div>
-            <h1> THIS WORKS</h1>    
-        </div>
-        );
-    }
-}
+
 ReactDOM.render(<App/>, document.querySelector('#AppContainer'));
